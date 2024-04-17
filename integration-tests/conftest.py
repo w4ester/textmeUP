@@ -27,6 +27,7 @@ from text_generation.types import (
     ChatCompletionChunk,
     ChatCompletionComplete,
 )
+from security import safe_command
 
 DOCKER_IMAGE = os.getenv("DOCKER_IMAGE", None)
 HUGGING_FACE_HUB_TOKEN = os.getenv("HUGGING_FACE_HUB_TOKEN", None)
@@ -320,8 +321,7 @@ def launcher(event_loop):
         if not use_flash_attention:
             env["USE_FLASH_ATTENTION"] = "false"
 
-        with subprocess.Popen(
-            args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env
+        with safe_command.run(subprocess.Popen, args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env
         ) as process:
             yield ProcessLauncherHandle(process, port)
 
