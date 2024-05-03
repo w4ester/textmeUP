@@ -1,5 +1,4 @@
 import os
-import requests
 
 from typing import Dict, Optional, List
 from huggingface_hub.utils import build_hf_headers
@@ -7,6 +6,7 @@ from huggingface_hub.utils import build_hf_headers
 from text_generation import Client, AsyncClient, __version__
 from text_generation.types import DeployedModel
 from text_generation.errors import NotSupportedError, parse_error
+from security import safe_requests
 
 INFERENCE_ENDPOINT = os.environ.get(
     "HF_INFERENCE_ENDPOINT", "https://api-inference.huggingface.co"
@@ -20,8 +20,7 @@ def deployed_models(headers: Optional[Dict] = None) -> List[DeployedModel]:
     Returns:
         List[DeployedModel]: list of all currently deployed models
     """
-    resp = requests.get(
-        f"https://api-inference.huggingface.co/framework/text-generation-inference",
+    resp = safe_requests.get(f"https://api-inference.huggingface.co/framework/text-generation-inference",
         headers=headers,
         timeout=5,
     )
@@ -41,8 +40,7 @@ def check_model_support(repo_id: str, headers: Optional[Dict] = None) -> bool:
     Returns:
         bool: whether the model is supported by this client
     """
-    resp = requests.get(
-        f"https://api-inference.huggingface.co/status/{repo_id}",
+    resp = safe_requests.get(f"https://api-inference.huggingface.co/status/{repo_id}",
         headers=headers,
         timeout=5,
     )
