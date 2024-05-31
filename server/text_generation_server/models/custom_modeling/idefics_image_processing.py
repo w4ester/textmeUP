@@ -197,7 +197,7 @@ class IdeficsImageProcessor(BaseImageProcessor):
         elif isinstance(image_url_or_urls, str):
             image = image_url_or_urls
 
-            if image.startswith("http://") or image.startswith("https://"):
+            if image.startswith(("http://", "https://")):
                 response = requests.get(
                     image_url_or_urls, stream=True, headers=headers, timeout=(1, 5)
                 )

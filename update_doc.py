@@ -20,7 +20,7 @@ def main():
     header = ""
     block = []
     for line in lines:
-        if line.startswith("  -") or line.startswith("      -"):
+        if line.startswith(("  -", "      -")):
             rendered_block = "\n".join(block)
             if header:
                 final_doc += f"## {header}\n```shell\n{rendered_block}\n```\n"
