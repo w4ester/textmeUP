@@ -15,6 +15,7 @@ from text_generation_server.utils.hub import weight_files
 from text_generation_server.utils.gptq.quant_linear import QuantLinear
 from loguru import logger
 from typing import Optional
+import secrets
 
 DEV = torch.device("cuda:0")
 
@@ -378,12 +379,10 @@ def get_wikitext2(nsamples, seed, seqlen, model_id, trust_remote_code):
     trainenc = tokenizer("\n\n".join(traindata["text"]), return_tensors="pt")
     testenc = tokenizer("\n\n".join(testdata["text"]), return_tensors="pt")
 
-    import random
-
-    random.seed(seed)
+    secrets.SystemRandom().seed(seed)
     trainloader = []
     for _ in range(nsamples):
-        i = random.randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
+        i = secrets.SystemRandom().randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
         j = i + seqlen
         inp = trainenc.input_ids[:, i:j]
         tar = inp.clone()
@@ -410,12 +409,10 @@ def get_ptb(nsamples, seed, seqlen, model_id, trust_remote_code):
     trainenc = tokenizer("\n\n".join(traindata["sentence"]), return_tensors="pt")
     testenc = tokenizer("\n\n".join(valdata["sentence"]), return_tensors="pt")
 
-    import random
-
-    random.seed(seed)
+    secrets.SystemRandom().seed(seed)
     trainloader = []
     for _ in range(nsamples):
-        i = random.randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
+        i = secrets.SystemRandom().randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
         j = i + seqlen
         inp = trainenc.input_ids[:, i:j]
         tar = inp.clone()
@@ -451,34 +448,30 @@ def get_c4(nsamples, seed, seqlen, model_id, trust_remote_code):
             model_id, use_fast=True, trust_remote_code=trust_remote_code
         )
 
-    import random
-
-    random.seed(seed)
+    secrets.SystemRandom().seed(seed)
     trainloader = []
     for _ in range(nsamples):
         while True:
-            i = random.randint(0, len(traindata) - 1)
+            i = secrets.SystemRandom().randint(0, len(traindata) - 1)
             trainenc = tokenizer(traindata[i]["text"], return_tensors="pt")
             if trainenc.input_ids.shape[1] >= seqlen:
                 break
-        i = random.randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
+        i = secrets.SystemRandom().randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
         j = i + seqlen
         inp = trainenc.input_ids[:, i:j]
         tar = inp.clone()
         tar[:, :-1] = -100
         trainloader.append((inp, tar))
 
-    import random
-
-    random.seed(0)
+    secrets.SystemRandom().seed(0)
     valenc = []
     for _ in range(256):
         while True:
-            i = random.randint(0, len(valdata) - 1)
+            i = secrets.SystemRandom().randint(0, len(valdata) - 1)
             tmp = tokenizer(valdata[i]["text"], return_tensors="pt")
             if tmp.input_ids.shape[1] >= seqlen:
                 break
-        i = random.randint(0, tmp.input_ids.shape[1] - seqlen - 1)
+        i = secrets.SystemRandom().randint(0, tmp.input_ids.shape[1] - seqlen - 1)
         j = i + seqlen
         valenc.append(tmp.input_ids[:, i:j])
     valenc = torch.hstack(valenc)
@@ -510,12 +503,10 @@ def get_ptb_new(nsamples, seed, seqlen, model_id, trust_remote_code):
     trainenc = tokenizer(" ".join(traindata["sentence"]), return_tensors="pt")
     testenc = tokenizer(" ".join(testdata["sentence"]), return_tensors="pt")
 
-    import random
-
-    random.seed(seed)
+    secrets.SystemRandom().seed(seed)
     trainloader = []
     for _ in range(nsamples):
-        i = random.randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
+        i = secrets.SystemRandom().randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
         j = i + seqlen
         inp = trainenc.input_ids[:, i:j]
         tar = inp.clone()
@@ -549,17 +540,15 @@ def get_c4_new(nsamples, seed, seqlen, model_id, trust_remote_code):
             model_id, use_fast=True, trust_remote_code=trust_remote_code
         )
 
-    import random
-
-    random.seed(seed)
+    secrets.SystemRandom().seed(seed)
     trainloader = []
     for _ in range(nsamples):
         while True:
-            i = random.randint(0, len(traindata) - 1)
+            i = secrets.SystemRandom().randint(0, len(traindata) - 1)
             trainenc = tokenizer(traindata[i]["text"], return_tensors="pt")
             if trainenc.input_ids.shape[1] >= seqlen:
                 break
-        i = random.randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
+        i = secrets.SystemRandom().randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
         j = i + seqlen
         inp = trainenc.input_ids[:, i:j]
         tar = inp.clone()
