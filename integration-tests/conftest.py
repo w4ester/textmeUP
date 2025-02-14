@@ -8,7 +8,6 @@ import docker
 import json
 import math
 import time
-import random
 
 from docker.errors import NotFound
 from typing import Optional, List, Dict
@@ -27,6 +26,7 @@ from text_generation.types import (
     ChatCompletionChunk,
     ChatCompletionComplete,
 )
+import secrets
 
 DOCKER_IMAGE = os.getenv("DOCKER_IMAGE", None)
 HUGGING_FACE_HUB_TOKEN = os.getenv("HUGGING_FACE_HUB_TOKEN", None)
@@ -278,8 +278,8 @@ def launcher(event_loop):
         dtype: Optional[str] = None,
         revision: Optional[str] = None,
     ):
-        port = random.randint(8000, 10_000)
-        master_port = random.randint(10_000, 20_000)
+        port = secrets.SystemRandom().randint(8000, 10_000)
+        master_port = secrets.SystemRandom().randint(10_000, 20_000)
 
         shard_uds_path = (
             f"/tmp/tgi-tests-{model_id.split('/')[-1]}-{num_shard}-{quantize}-server"
@@ -348,7 +348,7 @@ def launcher(event_loop):
         dtype: Optional[str] = None,
         revision: Optional[str] = None,
     ):
-        port = random.randint(8000, 10_000)
+        port = secrets.SystemRandom().randint(8000, 10_000)
 
         args = ["--model-id", model_id, "--env"]
 
